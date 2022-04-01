@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/goethesum/newREST/internal/comment"
-	"github.com/goethesum/newREST/internal/comment/db"
+	"github.com/goethesum/newREST/internal/db"
+	transportHttp "github.com/goethesum/newREST/internal/transport/http"
 )
 
 // Run - is going to be responsible for
@@ -29,20 +29,10 @@ func Run() error {
 
 	cmtService := comment.NewService(db)
 
-	cmtService.PostComment(
-		context.Background(),
-		comment.Comment{
-			ID:     "f33b420c-b0ed-11ec-b909-0242ac120002",
-			Slug:   "manual-test",
-			Author: "Author",
-			Body:   "hello",
-		},
-	)
-
-	fmt.Println(cmtService.GetComment(
-		context.Background(),
-		"f33b420c-b0ed-11ec-b909-0242ac120002",
-	))
+	httpHandler := transportHttp.NewHandler(cmtService)
+	if err := httpHandler.Serve(); err != nil {
+		return err
+	}
 
 	return nil
 }
