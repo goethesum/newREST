@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/goethesum/newREST/internal/comment"
 	"github.com/goethesum/newREST/internal/comment/db"
 )
 
@@ -24,6 +26,12 @@ func Run() error {
 	}
 
 	fmt.Println("successfully conected and pinged databse")
+
+	cmtService := comment.NewService(db)
+	fmt.Println(cmtService.GetComment(
+		context.Background(),
+		"f33b420c-b0ed-11ec-b909-0242ac120002",
+	))
 
 	return nil
 }
